@@ -8,7 +8,6 @@ class User {
     Boolean active = false
     Integer balance = 0
 
-    static hasMany = [friends: User, books: Book]
 
     static constraints = {
         email(nullable: true)
