@@ -4,7 +4,9 @@ class BootStrap {
 
     def init = { servletContext ->
         List<User> users = createUsers()
-        validate(users.first())
+        findCreate()
+        findSave()
+        findCreateSaveWhere()
     }
 
     List<User> createUsers() {
@@ -21,14 +23,40 @@ class BootStrap {
         users
     }
 
-    void validate(User user) {
-        log.info "---Before value set HasErrors---${user.hasErrors()}"
-        user.name = null
-        log.info "---After value set HasErrors---${user.hasErrors()}"
-        log.info "---User is valid :: ${user.validate()}"
-        log.info "---User email is valid :: ${user.validate(['email'])}"
-        log.info "---After validate HasErrors---${user.hasErrors()}"
-        user.save(validate: false)
+    void findCreate() {
+        User user = User.findOrCreateByName("user 1")
+        log.info "user-----findOrCreateByName---${user.id}"
+        User user1 = User.findOrCreateByName("user 11")
+        log.info "user1-----findOrCreateByName---${user1.id}"
+
+        User user2 = User.findOrCreateByNameAndBalance("user 1", 1000)
+        log.info "user2-----findOrCreateByNameAndBalance---${user2.id}"
+        User user3 = User.findOrCreateByNameAndBalance("user 1", 12000)
+        log.info "user3-----findOrCreateByNameAndBalance---${user3.id}"
+    }
+
+    void findSave() {
+        User user = User.findOrSaveByName("user 1")
+        log.info "user-----findOrSaveByName---${user?.id}"
+        User user1 = User.findOrSaveByName("user 11")
+        log.info "user1-----findOrSaveByName---${user1?.id}"
+
+        User user2 = User.findOrSaveByNameAndBalance("user 1", 1000)
+        log.info "user2-----findOrSaveByNameAndBalance---${user2?.id}"
+        User user3 = User.findOrSaveByNameAndBalance("user 1", 12000)
+        log.info "user3-----findOrSaveByNameAndBalance---${user3?.id}"
+    }
+
+    void findCreateSaveWhere() {
+        User user = User.findOrCreateWhere([name: 'user 1', email: 'user+1@gmail.com', balance: 1000])
+        log.info "user-----findOrCreateWhere---${user?.id}"
+        User user1 = User.findOrCreateWhere([name: 'user 1', email: 'user+1@gmail.com', balance: 10000])
+        log.info "user1-----findOrCreateWhere---${user1?.id}"
+
+        User user2 = User.findOrSaveWhere([name: 'user 1', email: 'user+1@gmail.com', balance: 1000])
+        log.info "user2-----findOrSaveWhere---${user2?.id}"
+        User user3 = User.findOrSaveWhere([name: 'user 1', email: 'user+1@gmail.com', balance: 21000])
+        log.info "user3-----findOrSaveWhere---${user3?.id}"
     }
 
 
