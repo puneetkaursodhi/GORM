@@ -4,7 +4,6 @@ class BootStrap {
 
     def init = { servletContext ->
         List<User> users = createUsers()
-        validate(users.first())
         users.each {
             findById(it.id)
         }
@@ -26,16 +25,6 @@ class BootStrap {
             }
         }
         users
-    }
-
-    void validate(User user) {
-        log.info "---Before value set HasErrors---${user.hasErrors()}"
-        user.name = null
-        log.info "---After value set HasErrors---${user.hasErrors()}"
-        log.info "---User is valid :: ${user.validate()}"
-        log.info "---User email is valid :: ${user.validate(['email'])}"
-        log.info "---After validate HasErrors---${user.hasErrors()}"
-        user.save(validate: false)
     }
 
     void findById(Long id) {
