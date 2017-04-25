@@ -4,7 +4,7 @@ class BootStrap {
 
     def init = { servletContext ->
         List<User> users = createUsers()
-        validate(users.first())
+        countRecords()
     }
 
     List<User> createUsers() {
@@ -21,15 +21,17 @@ class BootStrap {
         users
     }
 
-    void validate(User user) {
-        log.info "---Before value set HasErrors---${user.hasErrors()}"
-        user.name = null
-        log.info "---After value set HasErrors---${user.hasErrors()}"
-        log.info "---User is valid :: ${user.validate()}"
-        log.info "---User email is valid :: ${user.validate(['email'])}"
-        log.info "---After validate HasErrors---${user.hasErrors()}"
-        user.save(validate: false)
+    void countRecords() {
+        Integer count = User.count()
+        log.info "Count : ${count}"
+        Integer count1 = User.countByName("uday")
+        log.info "countByName : ${count1}"
+        Integer count2 = User.countByNameIlikeAndBalanceIsNotNull("%user%")
+        log.info "countByNameIlikeAndBalanceIsNotNull : ${count2}"
+        Integer count3 = User.countByNameIlikeOrBalanceInList("%user%", [1000, 2000, 3000])
+        log.info "countByNameIlikeOrBalanceInList : ${count3}"
     }
+
 
 
     def destroy = {
