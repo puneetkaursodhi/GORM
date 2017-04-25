@@ -4,7 +4,9 @@ class BootStrap {
 
     def init = { servletContext ->
         List<User> users = createUsers()
-        validate(users.first())
+        listRecords()
+        listRecordsByIds(users.id)
+        findAllRecords()
     }
 
     List<User> createUsers() {
@@ -21,14 +23,34 @@ class BootStrap {
         users
     }
 
-    void validate(User user) {
-        log.info "---Before value set HasErrors---${user.hasErrors()}"
-        user.name = null
-        log.info "---After value set HasErrors---${user.hasErrors()}"
-        log.info "---User is valid :: ${user.validate()}"
-        log.info "---User email is valid :: ${user.validate(['email'])}"
-        log.info "---After validate HasErrors---${user.hasErrors()}"
-        user.save(validate: false)
+    void listRecords() {
+        List<User> users = User.list([sort: 'dob', order: 'desc', max: 5, offset: 0])
+        log.info "Listing records for list method"
+        logRecords(users)
+    }
+
+    void listRecordsByIds(List<Long> ids) {
+        List<User> users = User.getAll(ids)
+        logRecords(users)
+    }
+
+    void findAllRecords() {
+        List<User> users = User.findAllByName("user 1", [sort: 'dob', order: 'desc', max: 5, offset: 0])
+        log.info "Listing records of findAllByName"
+        logRecords(users)
+        List<User> users1 = User.findAllByNameIlikeAndBalanceGreaterThan("%user%", 4000, [sort: 'dob', order: 'desc', max: 5, offset: 0])
+        log.info "Listing records of findAllByNameIlikeAndBalanceGreaterThan"
+        logRecords(users1)
+        List<User> users2 = User.findAllByNameIlikeOrBalanceGreaterThan("%user%", 4000, [sort: 'dob', order: 'desc', max: 5, offset: 0])
+        log.info "Listing records of findAllByNameIlikeOrBalanceGreaterThan"
+        logRecords(users2)
+
+    }
+
+    void logRecords(List<User> users) {
+        users.each { User user ->
+            log.info "---${user.name}--${user.dob}"
+        }
     }
 
 
