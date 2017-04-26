@@ -1,5 +1,9 @@
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.FileAppender
 import grails.util.BuildSettings
 import grails.util.Environment
+import jdk.nashorn.internal.runtime.Debug
 import org.springframework.boot.logging.logback.ColorConverter
 import org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter
 
@@ -31,6 +35,8 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
             pattern = "%level %logger - %msg%n"
         }
     }
-    logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
+    logger("StackTrace", INFO, ['FULL_STACKTRACE'], false)
+    logger('grails.app', INFO, ['STDOUT'], false)
+
 }
 root(ERROR, ['STDOUT'])
